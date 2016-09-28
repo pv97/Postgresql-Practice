@@ -32,7 +32,7 @@ class QuestionLike
   def self.num_likes_for_question_id(question_id)
     count = QuestionsDatabase.instance.execute(<<-SQL, question_id)
       SELECT
-        COUNT(*)
+        COUNT(user_id)
       FROM
         question_likes
       WHERE

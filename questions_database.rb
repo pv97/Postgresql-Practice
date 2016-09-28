@@ -28,9 +28,27 @@ class ModelBase
     matches.map { |match| self.new(match)  }
   end
 
+  def save
+    if hash_variables['id'].nil?
+      create
+    else
+      update
+    end
+  end
+
+  def create
+    vars = hash_variables
+    var_keys = stringize_keys(vars)
+    var_vals = stringize_vals(vars)
+    QuestionsDatabase.instance.execute(<<-SQL)
+      INSERT INTO #{self.class.to_s.tableize} #{var_keys}
+      VALUES #{var_vals};
+    SQL
+    @id = QuestionsDatabase.instance.last_insert_row_id
+  end
+
   def update
     vars = hash_variables
-    self.class.new(vars)
     id = vars['id']
     vars.delete('id')
     var_string = stringize(vars)
@@ -61,6 +79,22 @@ class ModelBase
     array = []
     hash.each do |key,val|
       array << "#{key} = '#{val}'"
+    end
+    array.join(", ")
+  end
+
+  def self.stringize_keys(hash)
+    array = []
+    hash.each do |key,val|
+      array << "#{key}"
+    end
+    array.join(", ")
+  end
+
+  def self.stringize_vals(hash)
+    array = []
+    hash.each do |key,val|
+      array << "'#{val}'"
     end
     array.join(", ")
   end
