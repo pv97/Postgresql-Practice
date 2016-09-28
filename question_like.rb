@@ -48,7 +48,7 @@ class QuestionLike
         *, COUNT(*)
       FROM
         questions
-      JOIN
+      LEFT OUTER JOIN
         question_likes ON (questions.id = questions_likes.question_id)
       GROUP BY
         question.id

@@ -16,26 +16,6 @@ class QuestionFollow
     users.map { |user| User.new(user) }
   end
 
-users
-name  id
-tim   1
-bob   2
-jim   3
-
-questions_follows
-user_id   question_id
-1          1
-2          1
-1          2
-2           2
-3           2
-
-users + question_follow
-question_id   userid  name
-1             1        tim
-1             2        bob
-
-
   def self.followed_questions_for_user_id(user_id)
     questions = QuestionsDatabase.instance.execute(<<-SQL, user_id)
       SELECT
